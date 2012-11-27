@@ -1,0 +1,46 @@
+<head>
+  <title>Ethercoaster</title>
+</head>
+
+<body>
+  {{> main}}
+</body>
+
+<template name="edit">
+  <form>
+    <fieldset>
+      <label>URL</label>
+      <input type="text" name="url" 
+             data-original-value="{{url}}" value="{{url}}">
+      <span class="help-block">The Etherpad that this coaster currently points to.</span>
+      <label>Description</label>
+      <input type="text" name="description" 
+             data-original-value="{{description}}" value="{{description}}">
+      <span class="help-block">Brief description of what the Etherpad pointed at by this coaster is for.</span>
+        {{#if isChanged}}
+          <button type="submit" class="btn">Submit</button>
+          <button class="btn cancel">Cancel</button>
+        {{/if}}
+    </fieldset>
+  </form>
+  <button id="destroy-coaster" class="btn btn-danger">Destroy Coaster</button>  
+</template>
+
+<template name="main">
+  {{#if isHomepage}}
+    hi
+  {{else}}
+    {{#if etherpad}}
+      {{#if isEditing}}
+        {{#each etherpads}}
+          {{> edit}}
+        {{/each}}
+      {{/if}}
+    {{else}}
+      <p>The coaster <strong>{{etherpadId}}</strong> does not exist.</p>
+      {{#if isEditing}}
+        <button id="create-coaster" class="btn btn-primary">Create Coaster</button>
+      {{/if}}
+    {{/if}}
+  {{/if}}
+</template>
