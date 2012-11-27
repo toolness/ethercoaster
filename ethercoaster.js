@@ -1,6 +1,11 @@
 var Etherpads = new Meteor.Collection("etherpads");
+var CachedEtherpads = new Meteor.Collection("cachedpads");
+
+var RECACHE_ETHERPAD_INTERVAL = 10000;
+var MIN_RECACHE_INTERVAL = 5000;
 
 if (Meteor.isClient) {
+  
   ////////// Helpers for in-place editing //////////
 
   // https://github.com/meteor/meteor/blob/master/examples/todos/client/todos.js
@@ -126,6 +131,20 @@ if (Meteor.isClient) {
     }
   });
   
+  Template.cachedContent.exists = function() {
+    return !!this.lastCacheEnd;
+  };
+  
+  Template.cachedContent.lastRetrieved = function() {
+    return (new Date(this.lastCacheEnd)).toString();
+  };
+  
+  Template.cachedContent.caches = function() {
+    return CachedEtherpads.find({
+      url: this.url
+    });
+  };
+  
   var EthercoasterRouter = Backbone.Router.extend({
     routes: {
       ":etherpadId": "etherpad",
@@ -153,11 +172,77 @@ if (Meteor.isClient) {
     Meteor.subscribe("etherpads", function() {
       Session.set("ready", true);
     });
+    Meteor.autosubscribe(function() {
+      if (Session.get("isEditing") && Session.get("etherpadId") !== null) {
+        var pad = Etherpads.findOne({shortname: Session.get("etherpadId")});
+        if (pad && pad.url)
+          Meteor.subscribe("cachedEtherpads", pad.url);
+      }
+    });
+    Meteor.setInterval(function() {
+      if (Session.get("etherpadId") !== null)
+        Meteor.call("recacheEtherpad", Session.get("etherpadId"));
+    }, RECACHE_ETHERPAD_INTERVAL);
   });
 }
 
-if (Meteor.isServer) {
+if (Meteor.isServer) {  
   Meteor.startup(function () {
+    Meteor.methods({
+      recacheEtherpad: function(etherpadId) {
+        var padTextUrl;
+        var pad = Etherpads.findOne({
+          shortname: etherpadId
+        });
+        if (!(pad && typeof(pad.url) == "string"))
+          return;
+        var cachedPad = CachedEtherpads.findOne({
+          url: pad.url
+        });
+        if (!cachedPad) {
+          cachedPad = {
+            url: pad.url,
+            lastCacheStart: 0,
+            lastCacheEnd: 0,
+            text: ""
+          };
+          cachedPad._id = CachedEtherpads.insert(cachedPad);
+        }
+        var start = Date.now();
+        if (start - cachedPad.lastCacheStart < MIN_RECACHE_INTERVAL)
+          return;
+        CachedEtherpads.update({
+          url: pad.url
+        }, {$set: {lastCacheStart: start}});
+        if (pad.url.indexOf("/p/") != -1) {
+          // Assume it's an etherpad lite pad.
+          padTextUrl = pad.url + "/export/txt";
+        } else {
+          // Assume it's an etherpad pad.
+          var parse = __meteor_bootstrap__.require('url').parse;
+          var parts = parse(pad.url);
+          padTextUrl = parts.protocol + "//" + parts.host +
+                       "/ep/pad/export" + parts.pathname + 
+                       "/latest?format=txt";
+        }
+        this.unblock();
+        var result = Meteor.http.call("GET", padTextUrl);
+        if (result.statusCode == 200 &&
+            result.headers['content-type'].indexOf('text/plain') == 0) {
+          CachedEtherpads.update({
+            url: pad.url
+          }, {$set: {
+            lastCacheEnd: Date.now(),
+            text: result.content
+          }});
+        }
+      }
+    });
+    Meteor.publish("cachedEtherpads", function(url) {
+      return CachedEtherpads.find({
+        url: url
+      });
+    });
     Meteor.publish("etherpads", function() {
       return Etherpads.find({});
     });

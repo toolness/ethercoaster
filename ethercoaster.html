@@ -14,6 +14,24 @@
   {{/if}}
 </template>
 
+<template name="cachedContent">
+  <h2>Cached Content</h2>
+  {{#each caches}}
+    {{#if exists}}
+      <p>Last retrieved on {{lastRetrieved}}.</p>
+      <textarea class="cached-content">{{text}}</textarea>
+    {{else}}
+      <p>The etherpad's content has never been cached. This could be because of any of the following reasons:</p>
+      <ul>
+        <li>The etherpad's URL is invalid.</li>
+        <li>The etherpad is protected by an authentication mechanism.</li>
+        <li>The etherpad is located on a subdomain that requires cookies to
+          access.</li>
+      </ul>
+    {{/if}}
+  {{/each}}
+</template>
+
 <template name="edit">
   <div class="container">
     <h1>Editing Coaster <em>{{shortname}}</em></h1>
@@ -28,6 +46,7 @@
       </fieldset>
     <a href="/{{shortname}}" class="btn">Visit Coaster</a>
     <button id="destroy-coaster" class="btn btn-danger">Destroy Coaster</button>  
+    {{> cachedContent}}
   </div>
 </template>
 
