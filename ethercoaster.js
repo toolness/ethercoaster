@@ -24,34 +24,14 @@ if (Meteor.isClient) {
     return Session.get("etherpadId") === null;
   };
   
-  Template.edit.isChanged = function() {
-    return Session.get("isEditingChanged");
-  };
-  
-  Template.edit.created = function() {
-    Session.set("isEditingChanged", false);
-  };
-  
   Template.edit.events({
     'submit': function(evt, tmpl) {
       var update = {};
       tmpl.findAll("input").forEach(function(input) {
-        if (input.value != input.getAttribute("data-original-value"))
-          update[input.name] = input.value;
+        update[input.name] = input.value;
       });
       Etherpads.update({_id: this._id}, {$set: update});
-      Session.set("isEditingChanged", false);
       evt.preventDefault();
-    },
-    'click .cancel': function(evt, tmpl) {
-      tmpl.findAll("input").forEach(function(input) {
-        input.value = input.getAttribute("data-original-value");
-      });
-      Session.set("isEditingChanged", false);
-    },
-    'keyup input, keydown input, focusout input': function(evt) {
-      Session.set("isEditingChanged",
-                  evt.target.value != evt.target.getAttribute("data-original-value"));
     },
     'click #destroy-coaster': function(evt) {
       Etherpads.remove({_id: this._id});

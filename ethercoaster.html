@@ -10,17 +10,12 @@
   <form>
     <fieldset>
       <label>URL</label>
-      <input type="text" name="url" 
-             data-original-value="{{url}}" value="{{url}}">
-      <span class="help-block">The Etherpad that this coaster currently points to.</span>
+      <input type="text" name="url" value="{{url}}">
+      <span class="help-block">The Etherpad that this coaster currently points to. Last saved value is <strong>{{url}}</strong>.</span>
       <label>Description</label>
-      <input type="text" name="description" 
-             data-original-value="{{description}}" value="{{description}}">
-      <span class="help-block">Brief description of what the Etherpad pointed at by this coaster is for.</span>
-        {{#if isChanged}}
-          <button type="submit" class="btn">Submit</button>
-          <button class="btn cancel">Cancel</button>
-        {{/if}}
+      <input type="text" name="description" value="{{description}}">
+      <span class="help-block">Brief description of what the Etherpad pointed at by this coaster is for. Last saved value is <strong>{{description}}</strong>.</span>
+      <button type="submit" class="btn">Submit</button>
     </fieldset>
   </form>
   <button id="destroy-coaster" class="btn btn-danger">Destroy Coaster</button>  
