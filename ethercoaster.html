@@ -54,26 +54,30 @@
 </template>
 
 <template name="main">
-  {{#if isHomepage}}
-    {{> home}}
-  {{else}}
-    {{#if etherpad}}
-      {{#each etherpads}}
-        {{#if isEditing}}
-          {{> edit}}
-        {{else}}
-          {{> show}}
-        {{/if}}
-      {{/each}}
+  {{#if ready}}
+    {{#if isHomepage}}
+      {{> home}}
     {{else}}
-      {{#if isEditing}}
-        {{#if timeHasPassed}}
-          <div class="container">
-            <p>The coaster <strong>{{etherpadId}}</strong> does not exist.</p>
+      {{#if etherpad}}
+        {{#each etherpads}}
+          {{#if isEditing}}
+            {{> edit}}
+          {{else}}
+            {{> show}}
+          {{/if}}
+        {{/each}}
+      {{else}}
+        <div class="container">
+          <p>The coaster <strong>{{etherpadId}}</strong> does not exist.</p>
+          {{#if isEditing}}
             <button id="create-coaster" class="btn btn-primary">Create Coaster</button>
-          </div>
-        {{/if}}
+          {{/if}}
+        </div>
       {{/if}}
     {{/if}}
+  {{else}}
+    <div class="container">
+      <h1><img src="ajax-loader.gif"></h1>
+    </div>
   {{/if}}
 </template>

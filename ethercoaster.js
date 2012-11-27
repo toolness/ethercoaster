@@ -55,8 +55,8 @@ if (Meteor.isClient) {
     return Session.get("etherpadId") === null;
   };
   
-  Template.main.timeHasPassed = function() {
-    return Session.get("timeHasPassed");
+  Template.main.ready = function() {
+    return Session.get("ready");
   };
   
   Template.home.etherpads = function() {
@@ -150,14 +150,16 @@ if (Meteor.isClient) {
   
   Meteor.startup(function () {
     Backbone.history.start({pushState: true});
-    Meteor.setTimeout(function() {
-      Session.set("timeHasPassed", true);
-    }, 2000);
+    Meteor.subscribe("etherpads", function() {
+      Session.set("ready", true);
+    });
   });
 }
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
-    // code to run on server at startup
+    Meteor.publish("etherpads", function() {
+      return Etherpads.find({});
+    });
   });
 }
