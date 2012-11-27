@@ -24,6 +24,10 @@ if (Meteor.isClient) {
     return Session.get("etherpadId") === null;
   };
   
+  Template.home.etherpads = function() {
+    return Etherpads.find();
+  };
+  
   Template.edit.events({
     'submit': function(evt, tmpl) {
       var update = {};
@@ -32,9 +36,6 @@ if (Meteor.isClient) {
       });
       Etherpads.update({_id: this._id}, {$set: update});
       evt.preventDefault();
-    },
-    'click #visit-coaster': function(evt) {
-      Router.navigate(this.shortname, true);
     },
     'click #destroy-coaster': function(evt) {
       Etherpads.remove({_id: this._id});

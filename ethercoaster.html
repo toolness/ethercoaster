@@ -20,7 +20,7 @@
         <button type="submit" class="btn">Save Changes</button>
       </fieldset>
     </form>
-    <a id="visit-coaster" class="btn">Visit Coaster</a>
+    <a href="/{{shortname}}" class="btn">Visit Coaster</a>
     <button id="destroy-coaster" class="btn btn-danger">Destroy Coaster</button>  
   </div>
 </template>
@@ -29,9 +29,27 @@
   <iframe src="{{url}}" class="etherpad"></iframe>
 </template>
 
+<template name="home">
+  <div class="container">
+    <h1>Ethercoasters</h1>
+    <table class="table">
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    {{#each etherpads}}
+      <tr>
+        <td><a href="/{{shortname}}">{{shortname}}</a></td>
+        <td>{{description}}</td>
+      </tr>
+    {{/each}}
+    </table>
+  </div>
+</template>
+
 <template name="main">
   {{#if isHomepage}}
-    hi
+    {{> home}}
   {{else}}
     {{#if etherpad}}
       {{#each etherpads}}
