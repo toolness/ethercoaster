@@ -7,18 +7,26 @@
 </body>
 
 <template name="edit">
-  <form>
-    <fieldset>
-      <label>URL</label>
-      <input type="text" name="url" value="{{url}}">
-      <span class="help-block">The Etherpad that this coaster currently points to. Last saved value is <strong>{{url}}</strong>.</span>
-      <label>Description</label>
-      <input type="text" name="description" value="{{description}}">
-      <span class="help-block">Brief description of what the Etherpad pointed at by this coaster is for. Last saved value is <strong>{{description}}</strong>.</span>
-      <button type="submit" class="btn">Submit</button>
-    </fieldset>
-  </form>
-  <button id="destroy-coaster" class="btn btn-danger">Destroy Coaster</button>  
+  <div class="container">
+    <h1>Editing Coaster <em>{{shortname}}</em></h1>
+    <form class="edit">
+      <fieldset>
+        <label>URL</label>
+        <input type="text" name="url" value="{{url}}">
+        <span class="help-block">The Etherpad that this coaster currently points to. Last saved value is <strong>{{url}}</strong>.</span>
+        <label>Description</label>
+        <input type="text" name="description" value="{{description}}">
+        <span class="help-block">Brief description of what the Etherpad pointed at by this coaster is for. Last saved value is <strong>{{description}}</strong>.</span>
+        <button type="submit" class="btn">Save Changes</button>
+      </fieldset>
+    </form>
+    <a id="visit-coaster" class="btn">Visit Coaster</a>
+    <button id="destroy-coaster" class="btn btn-danger">Destroy Coaster</button>  
+  </div>
+</template>
+
+<template name="show">
+  <iframe src="{{url}}" class="etherpad"></iframe>
 </template>
 
 <template name="main">
@@ -26,11 +34,13 @@
     hi
   {{else}}
     {{#if etherpad}}
-      {{#if isEditing}}
-        {{#each etherpads}}
+      {{#each etherpads}}
+        {{#if isEditing}}
           {{> edit}}
-        {{/each}}
-      {{/if}}
+        {{else}}
+          {{> show}}
+        {{/if}}
+      {{/each}}
     {{else}}
       <p>The coaster <strong>{{etherpadId}}</strong> does not exist.</p>
       {{#if isEditing}}

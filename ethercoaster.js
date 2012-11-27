@@ -33,6 +33,9 @@ if (Meteor.isClient) {
       Etherpads.update({_id: this._id}, {$set: update});
       evt.preventDefault();
     },
+    'click #visit-coaster': function(evt) {
+      Router.navigate(this.shortname, true);
+    },
     'click #destroy-coaster': function(evt) {
       Etherpads.remove({_id: this._id});
     }
@@ -61,9 +64,6 @@ if (Meteor.isClient) {
     editEtherpad: function(etherpadId) {
       Session.set("etherpadId", etherpadId);
       Session.set("isEditing", true);
-    },
-    setEtherpad: function(etherpadId) {
-      this.navigate(etherpadId, true);
     }
   });
   
