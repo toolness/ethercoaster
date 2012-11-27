@@ -67,8 +67,12 @@
       {{/each}}
     {{else}}
       {{#if isEditing}}
-        <p>The coaster <strong>{{etherpadId}}</strong> does not exist.</p>
-        <button id="create-coaster" class="btn btn-primary">Create Coaster</button>
+        {{#if timeHasPassed}}
+          <div class="container">
+            <p>The coaster <strong>{{etherpadId}}</strong> does not exist.</p>
+            <button id="create-coaster" class="btn btn-primary">Create Coaster</button>
+          </div>
+        {{/if}}
       {{/if}}
     {{/if}}
   {{/if}}

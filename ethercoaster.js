@@ -55,6 +55,10 @@ if (Meteor.isClient) {
     return Session.get("etherpadId") === null;
   };
   
+  Template.main.timeHasPassed = function() {
+    return Session.get("timeHasPassed");
+  };
+  
   Template.home.etherpads = function() {
     return Etherpads.find();
   };
@@ -146,6 +150,9 @@ if (Meteor.isClient) {
   
   Meteor.startup(function () {
     Backbone.history.start({pushState: true});
+    Meteor.setTimeout(function() {
+      Session.set("timeHasPassed", true);
+    }, 2000);
   });
 }
 
