@@ -6,20 +6,26 @@
   {{> main}}
 </body>
 
+<template name="editField">
+  {{#if editing}}
+  <input type="text" class="click-to-edit" name="{{param}}" value="{{value}}">
+  {{else}}
+  <div title="Click to edit." class="click-to-edit well">{{value}}</div>
+  {{/if}}
+</template>
+
 <template name="edit">
   <div class="container">
     <h1>Editing Coaster <em>{{shortname}}</em></h1>
-    <form class="edit">
       <fieldset>
         <label>URL</label>
-        <input type="text" name="url" value="{{url}}">
-        <span class="help-block">The Etherpad that this coaster currently points to. The current saved value is <strong>{{url}}</strong>.</span>
+        {{editField "url"}}
+        <span class="help-block">The Etherpad that this coaster currently points to.</span>
         <label>Description</label>
-        <input type="text" name="description" value="{{description}}">
-        <span class="help-block">Brief description of what the Etherpad pointed at by this coaster is for. The current saved value is <strong>{{description}}</strong>.</span>
-        <button type="submit" class="btn">Save Changes</button>
+        {{editField "description"}}
+        <span class="help-block">Brief description of what the Etherpad pointed at by this coaster.</span>
+        
       </fieldset>
-    </form>
     <a href="/{{shortname}}" class="btn">Visit Coaster</a>
     <button id="destroy-coaster" class="btn btn-danger">Destroy Coaster</button>  
   </div>

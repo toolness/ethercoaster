@@ -13,3 +13,15 @@ iframe.etherpad {
   height: 100%;
   border: none;
 }
+
+input.click-to-edit {
+  width: 100%;
+}
+
+div.click-to-edit {
+  cursor: pointer;
+}
+
+div.click-to-edit:hover {
+  background-color: lightyellow;
+}
