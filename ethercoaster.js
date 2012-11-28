@@ -183,6 +183,15 @@ if (Meteor.isClient) {
       if (Session.get("etherpadId") !== null)
         Meteor.call("recacheEtherpad", Session.get("etherpadId"));
     }, RECACHE_ETHERPAD_INTERVAL);
+    window.addEventListener("click", function(event) {
+      if (event.target.nodeName == "A") {
+        var href = event.target.getAttribute("href");
+        if (href && href[0] == "/") {
+          event.preventDefault();
+          Router.navigate(href.slice(1), true);
+        }
+      }
+    }, true);
   });
 }
 
